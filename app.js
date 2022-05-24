@@ -1,24 +1,31 @@
 'use strict';
+
 // Global Variable
+
 let voteNumb = 25;
 let busMall = [];
 
 //DOM References
+
 let imgContainer = document.getElementById('img-container');
 let imgOne = document.getElementById('img-one');
 let imgTwo = document.getElementById('img-two');
 let imgThree = document.getElementById('img-three');
 
+let showResultsBtn = document.getElementById('show-results-btn');
+let resultsList = document.getElementById('results-list');
 
 
 //constructor
-function Bus(name, fileExtension = 'jpg') {
+
+function Bus(name, fileExtension = 'jpeg') {
   this.name = name;
   this.views = 0;
   this.votes = 0;
-  this.photo = 'img/${name}.${fileextension}';
+  this.photo = `img/${name}.${fileExtension}`;
 
   busMall.push(this);
+
 }
 
 new Bus('bag');
@@ -46,51 +53,56 @@ new Bus('wine-glass');
 function getRandomIndex() {
   return Math.floor(Math.random() * busMall.length);
 }
-function renderImgs(){
+function renderImgs() {
 
-let busOneIndex = getRandomIndex();
-let busTwoIndex = getRandomIndex();
-let busThreeIndex = getRandomIndex();
+  let busOneIndex = getRandomIndex();
+  let busTwoIndex = getRandomIndex();
+  let busThreeIndex = getRandomIndex();
 
-let showResultsBtn = document.getElementById('show-results-btn');
-let resultsList = document.getElementById('results-list');
+  while (busOneIndex === busTwoIndex) {
+    busTwoIndex = getRandomIndex();
+  }
+  while (busTwoIndex === busThreeIndex) {
+    busThreeIndex = getRandomIndex();
+  }
+  while (busThreeIndex === busOneIndex) {
+    busOneIndex = getRandomIndex();
+  }
 
-while (busOneIndex === busTwoIndex) {
-  busTwoIndex = getRandomIndex();
-}
-while (busTwoIndex === busThreeIndex) {
-  busThreeIndex = getRandomIndex();
-}
+  imgOne.src = busMall[busOneIndex].photo;
+  imgOne.alt = busMall[busOneIndex].name;
+  busMall[busOneIndex].views++;
 
-imgOne.src = [busOneIndex].photo;
-imgOne.alt = busMall[busOneIndex].name;
-busMall[busOneIndex].views++;
+  imgTwo.src = busMall[busTwoIndex].photo;
+  imgTwo.alt = busMall[busTwoIndex].name;
+  busMall[busTwoIndex].views++;
 
-imgTwo.src = busMall[busTwoIndex].photo;
-imgTwo.alt = busMall[busTwoIndex].name;
-busMall[busTwoIndex].views++;
+  imgThree.src = busMall[busThreeIndex].photo;
+  imgThree.alt = busMall[busThreeIndex].name;
+  busMall[busThreeIndex].views++;
 
-imgThree.src = busMall[busThreeIndex].photo;
-imgThree.alt = busMall[busThreeIndex].name;
-busMall[busThreeIndex].views++;
-
-
-
-renderImgs();
-
-//Event Handlers
-function handleClick(event) {
-  voteNumb--;
-}
-let imgClicked = event.target.alt;
-
-for (let i = 0; i < busMall.length; i++) {
-  if (imgClicked === busMall[i].name) {
-    busMall[i].votes++;
+  if (voteNumb === 0) {
+    imgContainer.removeEventListener('click', handleClick);
   }
 }
 renderImgs();
 
+
+
+//Event Handlers
+function handleClick(event) {
+  voteNumb--;
+
+  let imgClicked = event.target.alt;
+
+  for (let i = 0; i < busMall.length; i++) {
+    if (imgClicked === busMall[i].name) {
+      busMall[i].votes++;
+    }
+
+  }
+  renderImgs();
+}
 function handleShowResults() {
   if (voteNumb === 0) {
     for (let i = 0; i < busMall.length; i++) {
