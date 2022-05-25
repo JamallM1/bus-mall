@@ -5,6 +5,8 @@
 let voteNumb = 25;
 let busMall = [];
 
+let checkArr = [];
+
 //DOM References
 
 let imgContainer = document.getElementById('img-container');
@@ -43,7 +45,7 @@ new Bus('pet-sweep');
 new Bus('scissors');
 new Bus('shark');
 new Bus('sweep', 'png');
-new Bus('tauntaum');
+new Bus('tauntaun');
 new Bus('unicorn');
 new Bus('water-can');
 new Bus('wine-glass');
@@ -54,20 +56,30 @@ function getRandomIndex() {
   return Math.floor(Math.random() * busMall.length);
 }
 function renderImgs() {
+  while(checkArr.length < 6){
+    let num = getRandomIndex();
+    if(!checkArr.includes(num)){
+      checkArr.push(num);
+    }
+  }
 
-  let busOneIndex = getRandomIndex();
-  let busTwoIndex = getRandomIndex();
-  let busThreeIndex = getRandomIndex();
+  // let busOneIndex = getRandomIndex();
+  // let busTwoIndex = getRandomIndex();
+  // let busThreeIndex = getRandomIndex();
 
-  while (busOneIndex === busTwoIndex) {
-    busTwoIndex = getRandomIndex();
-  }
-  while (busTwoIndex === busThreeIndex) {
-    busThreeIndex = getRandomIndex();
-  }
-  while (busThreeIndex === busOneIndex) {
-    busOneIndex = getRandomIndex();
-  }
+  // while (busOneIndex === busTwoIndex) {
+  //   busTwoIndex = getRandomIndex();
+  // }
+  // while (busTwoIndex === busThreeIndex) {
+  //   busThreeIndex = getRandomIndex();
+  // }
+  // while (busThreeIndex === busOneIndex) {
+  //   busOneIndex = getRandomIndex();
+  // }
+
+let busOneIndex = checkArr.shift();
+let busTwoIndex = checkArr.shift();
+let busThreeIndex = checkArr.shift();
 
   imgOne.src = busMall[busOneIndex].photo;
   imgOne.alt = busMall[busOneIndex].name;
@@ -88,7 +100,6 @@ function renderImgs() {
 renderImgs();
 
 
-
 //Event Handlers
 function handleClick(event) {
   voteNumb--;
@@ -102,9 +113,62 @@ function handleClick(event) {
 
   }
   renderImgs();
+  //my charts
 }
+function renderChart() {
+
+
+  let name = [];
+  let votes = [];
+  let views = [];
+
+  for (let i = 0; i < busMall.length; i++) {
+
+    name.push(busMall[i].name);
+    votes.push(busMall[i].votes);
+    views.push(busMall[i].views);
+  }
+  let ctx = document.getElementById('myChart').getContext('2d');
+  const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: name,
+      datasets: [{
+        label: '# of Votes',
+        data: votes,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+        ],
+        borderWidth: 1
+      },
+      {
+        label: '# of Views',
+        data: views,
+        backgroundColor: [
+          'rgba(155, 99, 132, 0.2)',
+        ],
+        borderColor: [
+          'rgba(155, 99, 132, 1)',
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
 function handleShowResults() {
   if (voteNumb === 0) {
+    renderChart();
     for (let i = 0; i < busMall.length; i++) {
       let liElement = document.createElement('li');
       liElement.textContent = `${busMall[i].name} was shown ${busMall[i].views} times and voted for ${busMall[i].votes} times.`;
