@@ -30,35 +30,47 @@ function Bus(name, fileExtension = 'jpeg') {
 
 }
 
-new Bus('bag');
-new Bus('banana');
-new Bus('bathroom');
-new Bus('boots');
-new Bus('breakfast');
-new Bus('bubblegum');
-new Bus('chair');
-new Bus('cthulhu');
-new Bus('dog-duck');
-new Bus('dragon');
-new Bus('pen');
-new Bus('pet-sweep');
-new Bus('scissors');
-new Bus('shark');
-new Bus('sweep', 'png');
-new Bus('tauntaun');
-new Bus('unicorn');
-new Bus('water-can');
-new Bus('wine-glass');
+let retreivedBus = localStorage.getItem('bus');
 
+let parsedBus = JSON.parse(retreivedBus);
+
+
+
+
+
+
+if (retreivedBus) {
+  busMall = parsedBus;
+} else {
+  new Bus('bag');
+  new Bus('banana');
+  new Bus('bathroom');
+  new Bus('boots');
+  new Bus('breakfast');
+  new Bus('bubblegum');
+  new Bus('chair');
+  new Bus('cthulhu');
+  new Bus('dog-duck');
+  new Bus('dragon');
+  new Bus('pen');
+  new Bus('pet-sweep');
+  new Bus('scissors');
+  new Bus('shark');
+  new Bus('sweep', 'png');
+  new Bus('tauntaun');
+  new Bus('unicorn');
+  new Bus('water-can');
+  new Bus('wine-glass');
+}
 //Helper Functions
 
 function getRandomIndex() {
   return Math.floor(Math.random() * busMall.length);
 }
 function renderImgs() {
-  while(checkArr.length < 6){
+  while (checkArr.length < 6) {
     let num = getRandomIndex();
-    if(!checkArr.includes(num)){
+    if (!checkArr.includes(num)) {
       checkArr.push(num);
     }
   }
@@ -77,9 +89,9 @@ function renderImgs() {
   //   busOneIndex = getRandomIndex();
   // }
 
-let busOneIndex = checkArr.shift();
-let busTwoIndex = checkArr.shift();
-let busThreeIndex = checkArr.shift();
+  let busOneIndex = checkArr.shift();
+  let busTwoIndex = checkArr.shift();
+  let busThreeIndex = checkArr.shift();
 
   imgOne.src = busMall[busOneIndex].photo;
   imgOne.alt = busMall[busOneIndex].name;
@@ -117,6 +129,13 @@ function handleClick(event) {
 }
 function renderChart() {
 
+  if (voteNumb === 0) {
+    imgContainer.removeEventListener('click', handleClick);
+
+    let stringifiedBus = JSON.stringify(busMall);
+    localStorage.setItem('bus', stringifiedBus);
+    console.log(stringifiedBus);
+  }
 
   let name = [];
   let votes = [];
@@ -165,6 +184,9 @@ function renderChart() {
     }
   });
 }
+
+
+// STEP 2: ADD TO LOCAL STORAGE
 
 function handleShowResults() {
   if (voteNumb === 0) {
